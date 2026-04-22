@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Digital Heroes - Full Stack Assessment
 
-## Getting Started
+PRD-aligned web platform with:
+- subscription plans (monthly/yearly)
+- score management (Stableford, latest 5 only)
+- monthly draw engine (random/algorithmic + simulation/publish)
+- charity selection and contribution tracking
+- winner proof and payout workflow
+- role-based panels (`USER` + `ADMIN`)
 
-First, run the development server:
+## Tech Stack
+- Next.js 16 (App Router, server actions)
+- Prisma + Supabase Postgres
+- Tailwind CSS
+- Cookie-based JWT auth
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Local / Supabase Setup
+1. Install dependencies:
+   - `npm install`
+2. Create environment file:
+   - `Copy-Item .env.example .env`
+3. Put your **new Supabase** connection string into `DATABASE_URL`.
+4. Generate Prisma client and database:
+   - `npm run prisma:generate`
+   - `npm run db:push`
+   - `npm run db:seed`
+5. Start app:
+   - `npm run dev`
+6. Open:
+   - [http://localhost:3000](http://localhost:3000)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Default Credentials
+- Admin:
+  - Email: `admin@digitalheroes.dev`
+  - Password: `Admin@123`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Key PRD Behaviors Implemented
+- Only one score allowed per date per user.
+- New scores auto-trim to latest 5 scores.
+- Draw tiers: 5, 4, and 3 matches.
+- Prize split enforced at 40% / 35% / 25%.
+- Admin can run simulation or published draw.
+- Winners can upload proof screenshots.
+- Admin verifies winners and marks payout state.
+- Subscription lifecycle includes active, lapsed, cancelled.
+- Independent donations supported outside subscription gameplay.
+- Email notification pipeline implemented via SMTP (with in-app notification fallback).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy (Vercel + Supabase recommendation)
+1. Create a **new Supabase project** and copy its Postgres URI.
+2. Create a **new Vercel account/project** and connect this repository.
+3. Set Vercel environment variables:
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+4. After first deploy, run against the same DB:
+   - `npx prisma db push`
+   - `npm run db:seed`
+5. Validate production:
+   - Signup as user
+   - Admin login
+   - Score entry and 5-score rolling logic
+   - Run draw (simulation + publish)
+   - Winner proof and payout status update
 
-## Learn More
+## Submission-Only Checklist
+- Live URL (Vercel)
+- User credentials
+- Admin credentials
+- Confirmation that new Vercel and new Supabase accounts were used
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Validation Commands
+- `npm run lint`
+- `npm run build`
